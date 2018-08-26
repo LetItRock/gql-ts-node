@@ -1,11 +1,11 @@
-import { startServer } from '../../startServer';
 import { request } from 'graphql-request';
+import { createTypeormConn } from '../../utils/createTypeormConn';
 import { User } from '../../entity/User';
 import {
   duplicateEmail,
   emailNotLongEnough,
   invalidEmail,
-  passwordNotLongEnough,
+  passwordNotLongEnough
 } from './errorMessages';
 
 const email = 'bob@bob.com';
@@ -19,12 +19,10 @@ mutation {
 }
 `;
 
-let getHost = () => '';
+const getHost = () => process.env.TEST_HOST as string;
 
 beforeAll(async () => {
-  const app = await startServer();
-  const { port } = app.address();
-  getHost = () => `http://127.0.0.1:${port}`;
+  await createTypeormConn();
 });
 
 describe('Register user', async () => {
@@ -42,7 +40,7 @@ describe('Register user', async () => {
     expect(response2.register).toHaveLength(1);
     expect(response2.register[0]).toEqual({
       path: 'email',
-      message: duplicateEmail,
+      message: duplicateEmail
     });
   });
 
@@ -52,13 +50,13 @@ describe('Register user', async () => {
       register: [
         {
           path: 'email',
-          message: emailNotLongEnough,
+          message: emailNotLongEnough
         },
         {
           path: 'email',
-          message: invalidEmail,
-        },
-      ],
+          message: invalidEmail
+        }
+      ]
     });
   });
 
@@ -68,9 +66,9 @@ describe('Register user', async () => {
       register: [
         {
           path: 'password',
-          message: passwordNotLongEnough,
-        },
-      ],
+          message: passwordNotLongEnough
+        }
+      ]
     });
   });
 
@@ -80,17 +78,17 @@ describe('Register user', async () => {
       register: [
         {
           path: 'email',
-          message: emailNotLongEnough,
+          message: emailNotLongEnough
         },
         {
           path: 'email',
-          message: invalidEmail,
+          message: invalidEmail
         },
         {
           path: 'password',
-          message: passwordNotLongEnough,
-        },
-      ],
+          message: passwordNotLongEnough
+        }
+      ]
     });
   });
 });
