@@ -1,5 +1,6 @@
+import { Connection } from 'typeorm';
+import { createTypeormConn } from './../../utils/createTypeormConn';
 import { request } from 'graphql-request';
-import { createTypeormConn } from '../../utils/createTypeormConn';
 import { User } from '../../entity/User';
 import {
   duplicateEmail,
@@ -21,8 +22,13 @@ mutation {
 
 const getHost = () => process.env.TEST_HOST as string;
 
+let connection: Connection;
 beforeAll(async () => {
-  await createTypeormConn();
+  connection = await createTypeormConn();
+});
+
+afterAll(async () => {
+  await connection.close();
 });
 
 describe('Register user', async () => {

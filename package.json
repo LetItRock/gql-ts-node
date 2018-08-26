@@ -4,9 +4,11 @@
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.1",
+    "@types/express": "^4.16.0",
     "@types/ioredis": "^3.2.14",
     "@types/jest": "^23.3.1",
     "@types/node": "^10.5.6",
+    "@types/node-fetch": "^2.1.2",
     "@types/uuid": "^3.4.3",
     "@types/yup": "^0.24.9",
     "gql2ts": "^1.8.2",
@@ -19,13 +21,16 @@
     "typescript": "3.0.1"
   },
   "dependencies": {
+    "@gql2ts/from-schema": "^1.8.2",
     "bcryptjs": "^2.4.3",
+    "express": "^4.16.3",
     "graphql": "^0.13.2",
     "graphql-import": "^0.6.0",
     "graphql-request": "^1.8.0",
     "graphql-tools": "^3.1.1",
     "graphql-yoga": "^1.15.1",
     "ioredis": "^4.0.0",
+    "node-fetch": "^2.2.0",
     "pg": "^7.4.3",
     "reflect-metadata": "^0.1.12",
     "typeorm": "0.2.7",
@@ -34,8 +39,8 @@
   },
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
-    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
-    "gen-schema-types": "gql2ts src/schema.graphql -o src/types/schema.d.ts"
+    "test": "NODE_ENV=test jest --detectOpenHandles --watch",
+    "gen-schema-types": "ts-node src/scripts/createTypes.ts"
   },
   "jest": {
     "globalSetup": "./src/testSetup/callSetup.js",
