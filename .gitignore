@@ -7,3 +7,4 @@ temp/
 .vs
 yarn-error.log
 dump.rdb
+.env
