@@ -15,7 +15,7 @@ export const startServer = async () => {
     context: ({ request }) => ({
       redis,
       url: `${request.protocol}://${request.get('host')}`,
-      session: request.session,
+      session: request.session
     })
   });
 
@@ -29,14 +29,17 @@ export const startServer = async () => {
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      },
-    }),
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+      }
+    })
   );
 
   const cors = {
     credentials: true,
-    origin: 'http://localhost:3000',
+    origin:
+      process.env.NODE_ENV === 'test'
+        ? '*'
+        : (process.env.FRONTEND_HOST as string)
   };
 
   server.express.get('/confirm/:id', confirmEmail);
@@ -44,7 +47,7 @@ export const startServer = async () => {
   await createTypeormConn();
   const app = await server.start({
     port: process.env.NODE_ENV === 'test' ? 9000 : 4000,
-    cors,
+    cors
   });
   console.log('Server is running on localhost:4000');
   return app;
