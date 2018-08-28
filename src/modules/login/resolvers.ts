@@ -11,17 +11,23 @@ export const createInvalidCredentialsMessage = () => [
   }
 ];
 
-export const createConfirmEmailMessage = () => [{
-  path: 'email',
-  message: confirmMessage,
-}]
+export const createConfirmEmailMessage = () => [
+  {
+    path: 'email',
+    message: confirmMessage
+  }
+];
 
 export const resolvers: ResolverMap = {
   Query: {
     dummy2: () => 'dummy!'
   },
   Mutation: {
-    login: async (_, { email, password }: GQL.ILoginOnMutationArguments) => {
+    login: async (
+      _,
+      { email, password }: GQL.ILoginOnMutationArguments,
+      { session }
+    ) => {
       const user = await User.findOne({ where: { email } });
       if (!user) {
         return createInvalidCredentialsMessage();
@@ -35,6 +41,9 @@ export const resolvers: ResolverMap = {
       if (!valid) {
         return createInvalidCredentialsMessage();
       }
+
+      // login successful
+      session.userId = user.id;
 
       return null;
     }
