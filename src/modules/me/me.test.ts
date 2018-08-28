@@ -41,6 +41,16 @@ afterAll(async () => {
 })
 
 describe('test me', () => {
+  it('return null if no cookie', async () => {
+    const response = await axios.post(process.env.TEST_HOST as string, {
+      query: meQuery,
+    }, {
+      withCredentials: true,
+    });
+
+    expect(response.data.data.me).toBeNull();
+  });
+
   it('get current user', async () => {
     await axios.post(process.env.TEST_HOST as string, {
       query: loginMutation(email, password),

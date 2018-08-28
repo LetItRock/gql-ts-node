@@ -7,6 +7,9 @@ export default async (
   context: any,
   info: any
 ) => {
+  if (!context.session || !context.session.userId) {
+    throw new Error('no cookie');
+  }
   // middleware
   const result = await resolver(parent, args, context, info);
   // afterware
