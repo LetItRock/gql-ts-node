@@ -23,8 +23,8 @@ column: number;
 interface IQuery {
 __typename: "Query";
 dummy2: string;
-me: IUser | null;
 dummy: string;
+me: IUser | null;
 }
 
 interface IUser {
@@ -36,6 +36,7 @@ email: string;
 interface IMutation {
 __typename: "Mutation";
 login: Array<IError>;
+logout: boolean | null;
 register: Array<IError>;
 }
 
