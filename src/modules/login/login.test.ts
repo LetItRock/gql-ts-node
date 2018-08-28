@@ -1,29 +1,11 @@
 import { User } from './../../entity/User';
 import { Connection } from 'typeorm';
 import { createTypeormConn } from './../../utils/createTypeormConn';
-import { request } from 'graphql-request';
 import { invalidLogin, confirmMessage } from './errorMessages';
+import { TestClient } from '../../utils/testClient';
 
 const email = 'bob@bob.com';
 const password = 'asadsdasda';
-const getHost = () => process.env.TEST_HOST as string;
-
-const registerMutation = (e: string, p: string) => `
-mutation {
-  register(email: "${e}", password: "${p}") {
-    path
-    message
-  }
-}
-`;
-const loginMutation = (e: string, p: string) => `
-mutation {
-  login(email: "${e}", password: "${p}") {
-    path
-    message
-  }
-}
-`;
 
 let connection: Connection;
 beforeAll(async () => {
@@ -36,12 +18,9 @@ afterAll(async () => {
 
 describe('test login', () => {
   it('email not found send back error', async () => {
-    const response = await request(
-      getHost(),
-      loginMutation('bob@bob.com', 'whatever')
-    );
-
-    expect(response).toEqual({
+    const client = new TestClient(process.env.TEST_HOST as string);
+    const response = await client.login('bob@bob.com', 'whatever');
+    expect(response.data).toEqual({
       login: [
         {
           path: 'email',
@@ -52,10 +31,11 @@ describe('test login', () => {
   });
 
   it('email not confirmed', async () => {
-    await request(getHost(), registerMutation(email, password));
+    const client = new TestClient(process.env.TEST_HOST as string);
+    await client.register(email, password);
 
-    const response2 = await request(getHost(), loginMutation(email, password));
-    expect(response2).toEqual({
+    const response = await client.login(email, password);
+    expect(response.data).toEqual({
       login: [
         {
           path: 'email',
@@ -68,11 +48,8 @@ describe('test login', () => {
     await User.update({ email }, { confirmed: true });
 
     // invlid password
-    const response3 = await request(
-      getHost(),
-      loginMutation(email, 'asdasdasdas')
-    );
-    expect(response3).toEqual({
+    const response2 = await client.login(email, 'asdasdasdas');
+    expect(response2.data).toEqual({
       login: [
         {
           path: 'email',
@@ -81,8 +58,8 @@ describe('test login', () => {
       ]
     });
 
-    const response4 = await request(getHost(), loginMutation(email, password));
-    expect(response4).toEqual({
+    const response3 = await client.login(email, password);
+    expect(response3.data).toEqual({
       login: null
     });
   });
