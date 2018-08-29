@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import { ResolverMap } from '../../types/graphql-utils';
 import { GQL } from '../../types/schema';
 import { User } from '../../entity/User';
-import { invalidLogin, confirmMessage } from './errorMessages';
+import { invalidLogin, confirmMessage, accountLockedMessage } from './errorMessages';
 import { userIdSessionPrefix } from '../../constants';
 
 export const createInvalidCredentialsMessage = () => [
@@ -16,6 +16,13 @@ export const createConfirmEmailMessage = () => [
   {
     path: 'email',
     message: confirmMessage
+  }
+];
+
+export const createAccountLockedMessage = () => [
+  {
+    path: 'email',
+    message: accountLockedMessage
   }
 ];
 
@@ -36,6 +43,10 @@ export const resolvers: ResolverMap = {
 
       if (!user.confirmed) {
         return createConfirmEmailMessage();
+      }
+
+      if (user.forgotPasswordLocked) {
+        return createAccountLockedMessage();
       }
 
       const valid = await bcrypt.compare(password, user.password);
