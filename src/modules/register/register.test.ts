@@ -1,21 +1,15 @@
 import { Connection } from 'typeorm';
-import { createTypeormConn } from './../../utils/createTypeormConn';
-import { request } from 'graphql-request';
 import { User } from '../../entity/User';
-import {
-  duplicateEmail,
-  emailNotLongEnough,
-  invalidEmail,
-  passwordNotLongEnough
-} from './errorMessages';
 import { TestClient } from '../../utils/testClient';
+import { createTestConn } from './../../testUtils/createTestConn';
+import { duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough } from './errorMessages';
 
 const email = 'bob@bob.com';
 const password = 'asadsdasda';
 
 let connection: Connection;
 beforeAll(async () => {
-  connection = await createTypeormConn();
+  connection = await createTestConn();
 });
 
 afterAll(async () => {

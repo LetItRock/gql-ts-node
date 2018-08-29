@@ -1,5 +1,5 @@
+import { createTestConn } from './../../testUtils/createTestConn';
 import { Connection } from 'typeorm';
-import { createTypeormConn } from '../../utils/createTypeormConn';
 import { User } from '../../entity/User';
 import { TestClient } from '../../utils/testClient';
 import { createForgotPasswordLink } from '../../utils/createForgotPasswordLink';
@@ -17,7 +17,7 @@ let userId: string;
 const redis = new Redis();
 
 beforeAll(async () => {
-  connection = await createTypeormConn();
+  connection = await createTestConn();
   const user = await User.create({
     email,
     password,

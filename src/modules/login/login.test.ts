@@ -1,15 +1,15 @@
-import { User } from './../../entity/User';
 import { Connection } from 'typeorm';
-import { createTypeormConn } from './../../utils/createTypeormConn';
-import { invalidLogin, confirmMessage } from './errorMessages';
 import { TestClient } from '../../utils/testClient';
+import { User } from './../../entity/User';
+import { createTestConn } from './../../testUtils/createTestConn';
+import { confirmMessage, invalidLogin } from './errorMessages';
 
 const email = 'bob@bob.com';
 const password = 'asadsdasda';
 
 let connection: Connection;
 beforeAll(async () => {
-  connection = await createTypeormConn();
+  connection = await createTestConn();
 });
 
 afterAll(async () => {

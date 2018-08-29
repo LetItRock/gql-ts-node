@@ -1,8 +1,7 @@
-import axios from 'axios';
 import { Connection } from 'typeorm';
-import { createTypeormConn } from '../../utils/createTypeormConn';
 import { User } from '../../entity/User';
 import { TestClient } from '../../utils/testClient';
+import { createTestConn } from './../../testUtils/createTestConn';
 
 let connection: Connection;
 const email = 'bob5@bob.com';
@@ -10,7 +9,7 @@ const password = 'asdasdasd';
 let userId: string;
 
 beforeAll(async () => {
-  connection = await createTypeormConn();
+  connection = await createTestConn();
   const user = await User.create({
     email,
     password,
